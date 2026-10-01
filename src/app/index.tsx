@@ -16,19 +16,15 @@ import {
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
-  // Estados do aplicativo
   const [bio, setBio] = useState('');                 
   const [modalVisivel, setModalVisivel] = useState(false); 
   const [textoTemp, setTextoTemp] = useState('');     
   const [notificacoesAtivas, setNotificacoesAtivas] = useState(false); 
   const [alertaVisivel, setAlertaVisivel] = useState(false); 
   
-  // Estado para a foto de perfil (começa com a imagem padrão do projeto)
   const [fotoPerfil, setFotoPerfil] = useState(require('../../assets/images/logo.jpeg'));
 
-  // Função para abrir a galeria e escolher uma foto de perfil nova
   const escolherFotoDaGaleria = async () => {
-    // Solicita permissão para acessar a biblioteca de fotos do celular
     const permissaoStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (permissaoStatus.status !== 'granted') {
@@ -36,28 +32,24 @@ export default function App() {
       return;
     }
 
-    // Abre a galeria do celular
     let resultado = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,  // Permite cortar/ajustar a imagem
-      aspect: [1, 1],       // Mantém a foto quadrada (formato de avatar)
-      quality: 1,           // Qualidade máxima
+      allowsEditing: true,  
+      aspect: [1, 1],
+      quality: 1,
     });
 
-    // Se o usuário selecionou uma imagem (não cancelou)
     if (!resultado.canceled) {
-      // Atualiza o estado da foto com o endereço (URI) da imagem escolhida
       setFotoPerfil(resultado.assets[0].uri);
     }
   };
 
-  // Efeito para disparar notificações a cada 5 segundos
   useEffect(() => {
     let intervalo = null;
 
     if (notificacoesAtivas && !modalVisivel && !alertaVisivel) {
       intervalo = setInterval(() => {
-        setAlertaVisivel(true); // Trava novos alertas até que este seja fechado
+        setAlertaVisivel(true); 
 
         const mensagens = [
           "Novo seguidor no perfil!",
@@ -73,7 +65,7 @@ export default function App() {
           [
             {
               text: "OK",
-              onPress: () => setAlertaVisivel(false) // Libera o próximo alerta ao fechar
+              onPress: () => setAlertaVisivel(false) 
             }
           ],
           { cancelable: false }
@@ -102,11 +94,9 @@ export default function App() {
           
           <View style={styles.card}>
             
-            {/* Cabeçalho com Avatar clicável */}
             <View style={styles.cabecalho}>
               <Pressable onPress={escolherFotoDaGaleria} style={styles.avatarContainer}>
                 <Image
-                  // Se for string (veio da galeria do celular) usa { uri }, senão usa o require local
                   source={typeof fotoPerfil === 'string' ? { uri: fotoPerfil } : fotoPerfil}
                   style={styles.avatar}
                 />
